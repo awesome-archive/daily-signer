@@ -1,24 +1,27 @@
-const webAuth = require('./auth/web')
-const users = require('../../../config/user.json').v2ex
-const DailySign = require('./jobs/daily-sign')
+import WebAuth from './auth/WebAuth'
+import DailySign from './jobs/DailySign'
+import User from '../../interfaces/User'
+import config from '../../config/index'
+
+const users = <User[]>config.v2ex
 
 async function _runWebJobs (user) {
-  await new DailySign(user).saveRun()
+  await new DailySign(user).run()
 }
 
 async function runWebJobs (user) {
-  const wValid = await webAuth.checkCookieStillValid(user)
-  if (wValid) {
+  const auth = new WebAuth(user)
+  if (await auth.check()) {
     await _runWebJobs(user)
   } else {
     if (!user.skipLogin) {
-      await webAuth.login(user)
+      await auth.login()
       await _runWebJobs(user)
     }
   }
 }
 
-module.exports = async function () {
+export default async function () {
   console.log('开始【V2EX】任务')
   for (let i = 0; i < users.length; i++) {
     const user = users[i]

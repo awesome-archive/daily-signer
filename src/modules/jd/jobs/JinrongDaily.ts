@@ -1,19 +1,14 @@
-const auth = require('../auth/web')
-const {success, mute, warning} = require('../../../utils/log')
-const {abortUselessRequests} = require('../../../utils/puppeteer')
-const Job = require('../../../interfaces/Job')
+import { success, mute, warn } from '../../../utils/log'
+import { abortUselessRequests } from '../../../utils/puppeteer'
+import Job from '../interfaces/WebJob'
 
-module.exports = class JingDouDaily extends Job {
-  constructor (...args) {
-    super(...args)
-    this.name = '京东金融每日签到'
+export default class JinrongDaily extends Job {
+  constructor (user) {
+    super(user)
+    this.name = '网页端金融每日签到'
   }
 
-  getCookies () {
-    return auth.getSavedCookies(this.user)
-  }
-
-  async run () {
+  protected _run = async () => {
     const page = await this.browser.newPage()
     await abortUselessRequests(page)
     await page.setCookie(...this.cookies)
@@ -27,7 +22,7 @@ module.exports = class JingDouDaily extends Job {
       await page.waitFor(1000)
       await page.waitFor('#getRewardText')
       const successText = await page.evaluate(element => element.textContent, await page.$('#getRewardText'))
-      console.log(successText ? success(successText) : warning('未知签到状态'))
+      console.log(successText ? success(successText) : warn('未知签到状态'))
     }
     await page.close()
   }

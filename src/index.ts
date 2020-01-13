@@ -1,12 +1,12 @@
-const fs = require('fs')
-const path = require('path')
-const jd = require('./src/modules/jd')
-const v2ex = require('./src/modules/v2ex')
-const {initBrowser} = require('./src/utils/browser')
+import * as fs from 'fs'
+import * as path from 'path'
+import jd from './modules/jd/index'
+import v2ex from './modules/v2ex/index'
+import { initBrowser } from './utils/browser'
 
 async function main () {
   // make sure temp dir exist
-  const tempDir = (path.join(__dirname, 'temp'))
+  const tempDir = (path.join(process.cwd(), 'temp'))
   !fs.existsSync(tempDir) && fs.mkdirSync(tempDir)
   await initBrowser()
   // start jobs

@@ -1,19 +1,14 @@
-const auth = require('../auth/web')
-const {success, mute} = require('../../../utils/log')
-const {abortUselessRequests} = require('../../../utils/puppeteer')
-const Job = require('../../../interfaces/Job')
+import { success, mute } from '../../../utils/log'
+import { abortUselessRequests } from '../../../utils/puppeteer'
+import Job from '../interfaces/WebJob'
 
-module.exports = class DailySign extends Job {
-  constructor (...args) {
-    super(...args)
+export default class DailySign extends Job {
+  constructor (user) {
+    super(user)
     this.name = '每日签到'
   }
 
-  getCookies () {
-    return auth.getSavedCookies(this.user)
-  }
-
-  async run () {
+  protected _run = async () => {
     const page = await this.browser.newPage()
     await abortUselessRequests(page)
     await page.setCookie(...this.cookies)
@@ -23,8 +18,8 @@ module.exports = class DailySign extends Job {
     // console.log(btnText)
     if (btn && btnText.indexOf('领取') >= 0) {
       await Promise.all([
-        page.waitForFunction('window.location.href.indexOf("/mission/daily/redeem") >= 0'),
-        page.click('input[type="button"]')
+        page.waitForNavigation(),
+        btn.click()
       ])
       const bodyHTML = await page.evaluate(() => document.body.innerHTML)
       const successMatch = bodyHTML.match(/已连续登录 \d+ 天/)

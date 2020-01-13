@@ -1,15 +1,28 @@
 {
   "name": "daily-sign",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "wxsms@foxmail.com",
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "node index.js"
+    "start": "node dist/bundle.js",
+    "dev": "npm run rollup && cross-env DEBUG=1 npm start",
+    "rollup": "rollup -c rollup.config.js"
   },
   "dependencies": {
+    "canvas": "^2.0.1",
     "chalk": "^2.4.1",
     "puppeteer": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.2",
+    "@types/puppeteer": "^1.9.1",
+    "cross-env": "^5.2.0",
+    "rollup": "^0.67.0",
+    "rollup-plugin-typescript": "^1.0.0",
+    "rollup-plugin-uglify": "^6.0.0",
+    "tslib": "^1.9.3",
+    "typescript": "^3.1.6"
   }
 }

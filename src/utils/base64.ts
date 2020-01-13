@@ -1,9 +1,7 @@
-function encode (str) {
+export function encode (str: string): string {
   return Buffer.from(str).toString('base64')
 }
 
-function decode (str) {
+export function decode (str: string): string {
   return Buffer.from(str, 'base64').toString('utf8')
 }
-
-module.exports = {encode, decode}

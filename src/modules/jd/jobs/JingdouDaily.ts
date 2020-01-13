@@ -1,19 +1,14 @@
-const auth = require('../auth/web')
-const {success, mute} = require('../../../utils/log')
-const {abortUselessRequests} = require('../../../utils/puppeteer')
-const Job = require('../../../interfaces/Job')
+import { success, mute } from '../../../utils/log'
+import { abortUselessRequests } from '../../../utils/puppeteer'
+import Job from '../interfaces/WebJob'
 
-module.exports = class JingDouDaily extends Job {
-  constructor (...args) {
-    super(...args)
+export default class JingdouDaily extends Job {
+  constructor (user) {
+    super(user)
     this.name = '网页端每日签到'
   }
 
-  getCookies () {
-    return auth.getSavedCookies(this.user)
-  }
-
-  async run () {
+  protected async _run () {
     const page = await this.browser.newPage()
     await abortUselessRequests(page)
     await page.setCookie(...this.cookies)
